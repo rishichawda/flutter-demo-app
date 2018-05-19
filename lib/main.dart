@@ -29,8 +29,7 @@ class RandomWords extends StatefulWidget {
 class RandomWordsState extends State < RandomWords > {
 
     final _suggestions = < WordPair > [];
-    final _bigger_font =
-    const TextStyle(fontSize: 16.0);
+    final _bigger_font = const TextStyle(fontSize: 16.0);
 
     final _saved = new Set < WordPair > ();
 
@@ -41,6 +40,9 @@ class RandomWordsState extends State < RandomWords > {
           title: new Center(
             child: new Text('Name Pair Generator')
           ),
+          actions: <Widget>[
+            new IconButton( icon: new Icon(Icons.list), onPressed: _push_saved)
+          ],
         ),
         body: _build_suggestions(),
       );
@@ -61,7 +63,6 @@ class RandomWordsState extends State < RandomWords > {
 
               if (index >= _suggestions.length) {
                 _suggestions.addAll(generateWordPairs().take(11));
-
               }
 
               return _build_row(_suggestions[index]);
@@ -74,14 +75,17 @@ class RandomWordsState extends State < RandomWords > {
         final already_saved = _saved.contains(word_pair);
 
         return new ListTile(
+
           title: new Text(
             word_pair.asPascalCase,
             style: _bigger_font,
           ),
+
           trailing: new Icon(
             already_saved ? Icons.favorite : Icons.favorite_border,
             color: already_saved ? Colors.red : null,
           ),
+
           onTap: () {
             setState(() {
               if (already_saved) {
@@ -91,8 +95,46 @@ class RandomWordsState extends State < RandomWords > {
               }
             });
           },
+
         );
 
+      }
+
+      void _push_saved() {
+        Navigator.of(context).push(
+
+          new MaterialPageRoute(
+            builder: (context) {
+              final tiles = _saved.map(
+                (word_pair) {
+                  return new ListTile(
+                    title: new Text(
+                      word_pair.asPascalCase,
+                      style: _bigger_font,
+                    ),
+                  );
+                }
+              );
+
+              final divided_tiles = ListTile.divideTiles(
+                context: context,
+                tiles: tiles
+              ).toList();
+
+              return new Scaffold(
+                appBar: new AppBar(
+                  title: new Center(
+                    child: new Text('Saved Pairs'),
+                  ),
+                ),
+                body: new ListView(
+                  children: divided_tiles,
+                ),
+              );
+
+            } // Builder property
+          )
+        );
       }
 
     }
