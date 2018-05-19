@@ -31,6 +31,8 @@ class RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final _bigger_font = const TextStyle(fontSize: 16.0);
 
+  final _saved = new Set<WordPair>();
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -68,10 +70,16 @@ class RandomWordsState extends State<RandomWords> {
 
   Widget _build_row(WordPair word_pair) {
 
+    final already_saved = _saved.contains(word_pair);
+
     return new ListTile(
       title: new Text(
         word_pair.asPascalCase,
         style: _bigger_font,
+      ),
+      trailing: new Icon(
+        already_saved ? Icons.favorite : Icons.favorite_border,
+        color: already_saved ? Colors.red : null,
       ),
     );
     
